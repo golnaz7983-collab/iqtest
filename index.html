@@ -5,7 +5,7 @@
 .visual-board{display:flex;justify-content:center;align-items:center;min-height:145px;margin:16px 0;padding:18px;background:#0c0c0c;border:1px solid #514326;border-radius:16px}.visual-board svg{width:min(100%,480px);height:125px}.visual-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.visual-choice{min-height:110px;display:flex;align-items:center;justify-content:center;background:#101010;border:1px solid #514326;border-radius:14px}.visual-choice svg{width:100%;height:90px;max-width:180px}.visual-choice.selected{border:2px solid var(--gold);background:#352914}</style></head><body>
 <header><div class="brand">تست IQ ✦</div><nav><button onclick="show('home')">خانه</button><button onclick="show('rank')">رتبه‌بندی</button><button onclick="show('profile')">پروفایل</button><button onclick="show('auth')">ورود / ثبت‌نام</button><button onclick="show('visualHome')">آزمون تصویری</button></nav></header>
 <main>
-<section id="home"><div class="hero"><div style="color:var(--gold)">CHALLENGE YOUR MIND</div><h1>هوشت رو به چالش بکش</h1><p>در آزمون‌های سرگرم‌کننده‌ی منطق، استدلال و الگویابی شرکت کن و امتیازت را ثبت کن.</p><button class="primary" onclick="show('auth')">شروع کن</button></div><div class="stats"><div class="stat"><b>۲۰ سؤال</b><small>در هر آزمون</small></div><div class="stat"><b>۳ سطح</b><small>آسان، متوسط، سخت</small></div><div class="stat"><b>۱۰ دقیقه</b><small>زمان هر آزمون</small></div></div><h2>انتخاب سطح آزمون</h2><div class="grid"><div class="card"><h3>آسان</h3><p>برای شروع و گرم‌کردن ذهن</p><button class="primary" onclick="start('easy')">شروع آزمون</button></div><div class="card"><h3>متوسط</h3><p>تمرین دقت و پیدا کردن ارتباط‌ها</p><button class="primary" onclick="start('medium')">شروع آزمون</button></div><div class="card"><h3>سخت</h3><p>چالش‌های پیچیده‌تر</p><button class="primary" onclick="start('hard')">شروع آزمون</button></div></div><div class="card" style="text-align:center;border-color:#8b6b2a"><h2>🧩 آزمون هوش تصویری</h2><p>۱۰ سؤال تصویری با ۵ دقیقه زمان و نمایش امتیاز در پایان.</p><button class="primary" onclick="startVisual()">شروع آزمون تصویری</button></div><p class="notice">این آزمون سرگرمی و تمرین است و نتیجه‌ی آن نمره رسمی یا تشخیص علمی IQ نیست.</p></section>
+<section id="home"><div class="hero"><div style="color:var(--gold)">CHALLENGE YOUR MIND</div><h1>هوشت رو به چالش بکش</h1><p>هر سطح سؤال‌های مخصوص خودش را دارد؛ سؤال‌ها بین آزمون‌های آسان، متوسط و سخت تکرار نمی‌شوند.</p><button class="primary" onclick="show('auth')">شروع کن</button></div><div class="stats"><div class="stat"><b>۲۰ سؤال</b><small>در هر آزمون</small></div><div class="stat"><b>۳ سطح</b><small>آسان، متوسط، سخت</small></div><div class="stat"><b>۱۰ دقیقه</b><small>زمان هر آزمون</small></div></div><h2>انتخاب سطح آزمون</h2><div class="grid"><div class="card"><h3>آسان</h3><p>برای شروع و گرم‌کردن ذهن</p><button class="primary" onclick="start('easy')">شروع آزمون</button></div><div class="card"><h3>متوسط</h3><p>تمرین دقت و پیدا کردن ارتباط‌ها</p><button class="primary" onclick="start('medium')">شروع آزمون</button></div><div class="card"><h3>سخت</h3><p>چالش‌های پیچیده‌تر</p><button class="primary" onclick="start('hard')">شروع آزمون</button></div></div><div class="card" style="text-align:center;border-color:#8b6b2a"><h2>🧩 آزمون هوش تصویری</h2><p>۱۰ سؤال تصویری با ۵ دقیقه زمان و نمایش امتیاز در پایان.</p><button class="primary" onclick="startVisual()">شروع آزمون تصویری</button></div><p class="notice">این آزمون سرگرمی و تمرین است و نتیجه‌ی آن نمره رسمی یا تشخیص علمی IQ نیست.</p></section>
 <section id="auth" class="hidden card"><h2>ورود یا ساخت حساب</h2><p>یک نام نمایشی انتخاب کن.</p><div class="field">نام نمایشی<input id="username" maxlength="20" placeholder="مثلاً متین"></div><button class="primary" onclick="login()">ادامه</button><p class="notice">نسخه آزمایشی: نام و امتیازها فقط در همین مرورگر ذخیره می‌شوند؛ ورود واقعی و رمز عبور فعال نیست.</p></section>
 <section id="profile" class="hidden card"><h2>پروفایل من</h2><div id="profileInfo"></div><button onclick="show('auth')">تغییر نام</button></section>
 <section id="quiz" class="hidden card"><div class="top"><b id="level"></b><b>زمان: <span id="timer">10:00</span></b></div><div class="progress"><div id="bar"></div></div><p id="counter"></p><div class="question" id="question"></div><div id="options"></div><div class="actions"><button id="prev" onclick="move(-1)">قبلی</button><button class="primary" id="next" onclick="move(1)">بعدی</button></div></section>
@@ -31,17 +31,91 @@
 const base=[
 ['عدد بعدی چیست؟ ۲، ۴، ۶، ۸، ؟',['۹','۱۰','۱۲','۱۴'],1],['کدام متفاوت است؟',['سیب','موز','هویج','پرتقال'],2],['سه روز بعد از دوشنبه؟',['سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'],2],['کدام شکل سه ضلع دارد؟',['مربع','مثلث','پنج‌ضلعی','دایره'],1],['۵، ۱۰، ۱۵، ؟',['۱۸','۲۰','۲۲','۲۵'],1],['کدام حیوان پرنده است؟',['گربه','ماهی','گنجشک','اسب'],2],['نصف ۱۸؟',['۸','۹','۱۰','۱۲'],1],['کدام با کتاب مرتبط است؟',['خواندن','دویدن','شنا','پختن'],0],['۳+۲؟',['۴','۵','۶','۷'],1],['کدام عدد زوج است؟',['۷','۹','۱۱','۱۴'],3],['یک ساعت چند دقیقه است؟',['۳۰','۴۵','۶۰','۹۰'],2],['عدد قبل از ۱۰۰؟',['۹۸','۹۹','۱۰۱','۹۰'],1],['محیط مربع ضلع ۶؟',['۱۲','۱۸','۲۴','۳۶'],2],['کدام عدد اول است؟',['۲۱','۲۷','۲۹','۳۳'],2],['زاویه راست چند درجه است؟',['۴۵','۶۰','۹۰','۱۸۰'],2],['۱، ۴، ۹، ۱۶، ؟',['۲۰','۲۴','۲۵','۳۶'],2],['۱۲ تقسیم بر نصف؟',['۶','۱۲','۲۴','۳۶'],2],['۲۵٪ عددی ۱۵ است؛ عدد؟',['۴۵','۵۰','۶۰','۷۵'],2],['مکعب چند رأس دارد؟',['۶','۸','۱۰','۱۲'],1],['۱، ۲، ۶، ۲۴، ۱۲۰، ؟',['۲۴۰','۳۶۰','۶۰۰','۷۲۰'],3]
 ];
-const levels={easy:base,medium:base.map((q,i)=>i%2?['الگوی عددی را کامل کن: '+(i+2)+', '+(i+4)+', '+(i+6)+', ؟',[''+(i+7),''+(i+8),''+(i+9),''+(i+10)],1]:q),hard:base.map((q,i)=>i%2?['اگر ۴ کارگر کاری را در ۶ روز انجام دهند، ۸ کارگر چند روز نیاز دارند؟',['۲','۳','۴','۱۲'],1]:q)};
+const levels={
+easy:[
+['۲، ۴، ۶، ۸، عدد بعدی؟',['۹','۱۰','۱۲','۱۴'],1],
+['کدام میوه است؟',['میز','سیب','مداد','کفش'],1],
+['یک هفته چند روز دارد؟',['۵','۶','۷','۸'],2],
+['کدام حیوان در آب زندگی می‌کند؟',['گربه','اسب','ماهی','گوسفند'],2],
+['۱۰ منهای ۳ چند می‌شود؟',['٦','٧','٨','٩'],1],
+['کدام شکل گرد است؟',['مربع','دایره','مثلث','مستطیل'],1],
+['حروف الف، ب، پ، ت؛ حرف بعدی؟',['ث','ج','چ','ح'],0],
+['نصف ۲۰ چند است؟',['۵','۸','۱۰','۱۲'],2],
+['کدام وسیله برای نوشتن است؟',['قاشق','مداد','بشقاب','توپ'],1],
+['۳، ۶، ۹، ۱۲، عدد بعدی؟',['۱۳','۱۴','۱۵','۱۶'],2],
+['کدام فصل بعد از تابستان می‌آید؟',['بهار','زمستان','پاییز','تابستان'],2],
+['یک جفت کفش چند لنگه است؟',['۱','۲','۳','۴'],1],
+['کدام عدد از همه بزرگ‌تر است؟',['۱۷','۷','۱۲','۹'],0],
+['۵+۷ چند می‌شود؟',['۱۰','۱۱','۱۲','۱۳'],2],
+['کدام پرواز می‌کند؟',['گنجشک','گاو','ماهی','خرگوش'],0],
+['اگر امروز سه‌شنبه باشد، فردا چه روزی است؟',['دوشنبه','چهارشنبه','پنجشنبه','جمعه'],1],
+['کدام وسیله زمان را نشان می‌دهد؟',['ساعت','لیوان','کتاب','چراغ'],0],
+['۱۵، ۱۴، ۱۳، عدد بعدی؟',['۱۲','۱۱','۱۰','۹'],0],
+['چند ضلع دارد مثلث؟',['۲','۳','۴','۵'],1],
+['اگر ۲ سیب داشته باشی و ۲ تا دیگر بگیری، چند سیب داری؟',['۲','۳','۴','۵'],2]
+],
+medium:[
+['۳، ۷، ۱۵، ۳۱، عدد بعدی؟',['۴۷','۵۵','۶۳','۶۵'],2],
+['اگر همه‌ی «لونا»ها آبی باشند و این شیء لونا باشد، رنگش چیست؟',['قرمز','آبی','سبز','مشخص نیست'],1],
+['کدام عدد با بقیه متفاوت است؟',['۱۶','۲۵','۳۶','۴۵'],3],
+['ساعت ۲:۳۰ است؛ ۹۰ دقیقه بعد چه ساعتی است؟',['۳:۳۰','۴:۰۰','۴:۳۰','۵:۰۰'],1],
+['۵ ماشین در ۵ دقیقه، ۵ قطعه می‌سازند. هر ماشین در ۵ دقیقه چند قطعه می‌سازد؟',['۱','۵','۱۰','۲۵'],0],
+['اگر امروز جمعه باشد، ۱۰ روز دیگر چه روزی است؟',['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه'],1],
+['۱، ۱، ۲، ۳، ۵، ۸، عدد بعدی؟',['۱۱','۱۲','۱۳','۱۵'],2],
+['کدام کسر بزرگ‌تر است؟',['۱/۲','۱/۳','۱/۴','۱/۵'],0],
+['محیط مستطیل با طول ۸ و عرض ۳ چقدر است؟',['۱۱','۱۸','۲۲','۲۴'],2],
+['اگر ۳ دفتر ۴۵ هزار تومان باشند، ۵ دفتر چند هزار تومان است؟',['۶۰','۷۰','۷۵','۹۰'],2],
+['در یک مسابقه از نفر دوم سبقت بگیری، چندم می‌شوی؟',['اول','دوم','سوم','چهارم'],1],
+['کدام واژه با بقیه هم‌گروه نیست؟',['متر','کیلومتر','سانتی‌متر','کیلوگرم'],3],
+['زاویه‌ی مکمل ۶۵ درجه چند درجه است؟',['۲۵','۱۱۵','۱۲۵','۱۳۵'],1],
+['۲، ۶، ۱۲، ۲۰، ۳۰، عدد بعدی؟',['۳۶','۴۰','۴۲','۴۸'],2],
+['اگر A از B بلندتر و B از C بلندتر باشد، کوتاه‌ترین کیست؟',['A','B','C','نمی‌توان فهمید'],2],
+['یک مخزن با ۴ شیر در ۸ ساعت پر می‌شود. با ۸ شیر مشابه چند ساعت؟',['۲','۴','۸','۱۶'],1],
+['مجموع زاویه‌های داخلی مثلث چند درجه است؟',['۹۰','۱۸۰','۲۷۰','۳۶۰'],1],
+['کدام عدد بر ۳ بخش‌پذیر است؟',['۱۲۴','۲۲۲','۳۱۱','۴۰۱'],1],
+['اگر ۲۵ درصد یک عدد ۲۰ باشد، آن عدد چیست؟',['۴۰','۶۰','۸۰','۱۰۰'],2],
+['در الگوی حروف A، C، F، J، O حرف بعدی چیست؟',['S','T','U','V'],2]
+],
+hard:[
+['۲، ۳، ۵، ۹، ۱۷، عدد بعدی؟',['۲۵','۳۱','۳۳','۳۵'],2],
+['سه جعبه با برچسب سیب، پرتقال و مخلوط داریم و همه برچسب‌ها اشتباه‌اند. برای تشخیص محتویات، حداقل از چند جعبه باید یک میوه بیرون آورد؟',['۱','۲','۳','۴'],0],
+['اگر x+ y=۱۵ و x-y=۳ باشد، x چند است؟',['۶','۸','۹','۱۲'],2],
+['یک عدد دو رقمی داریم؛ مجموع رقم‌هایش ۱۱ و رقم دهگان ۳ واحد بیشتر از یکان است. عدد چیست؟',['۴۷','۷۴','۶۵','۸۳'],1],
+['۶ نفر هر کدام با تمام افراد دیگر دقیقاً یک‌بار دست می‌دهند. چند دست‌دادن رخ می‌دهد؟',['۱۲','۱۵','۱۸','۳۰'],1],
+['دنباله: ۱، ۲، ۶، ۲۴، ۱۲۰، عدد بعدی؟',['۲۴۰','۳۶۰','۶۰۰','۷۲۰'],3],
+['اگر ۲ به توان n برابر ۶۴ باشد، n چند است؟',['۴','۵','۶','۸'],2],
+['زاویه‌ی بین عقربه‌های ساعت در ۳:۳۰ چند درجه است؟',['۶۰','۷۵','۹۰','۱۰۵'],1],
+['یک مکعب را از بیرون رنگ می‌کنیم و به ۲۷ مکعب کوچک مساوی می‌بریم. چند مکعب کوچک دقیقاً دو وجه رنگی دارند؟',['۸','۱۲','۱۶','۲۰'],1],
+['میانگین ۵ عدد ۱۸ است. اگر عدد ۲۸ حذف شود، میانگین ۴ عدد باقی‌مانده چیست؟',['۱۵','۱۶','۱۷','۱۸'],1],
+['اگر همه‌ی زِدها رِد باشند و هیچ رِدی آبی نباشد، کدام نتیجه حتماً درست است؟',['همه آبی‌ها زدند','هیچ زدی آبی نیست','همه ردها زدند','بعضی زدها آبی‌اند'],1],
+['در یک کیسه ۳ توپ قرمز و ۲ توپ آبی است. احتمال بیرون آوردن توپ آبی چقدر است؟',['۱/۵','۲/۵','۳/۵','۱/۲'],1],
+['محیط دایره‌ای با شعاع ۷ و π=۲۲/۷ چقدر است؟',['۲۲','۴۴','۴۹','۱۵۴'],1],
+['اگر امروز دوشنبه باشد، ۱۰۰ روز دیگر چه روزی است؟',['دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه'],2],
+['کدام عدد هم مربع کامل و هم مکعب کامل است؟',['۳۶','۶۴','۱۲۵','۲۱۶'],1],
+['در یک رمز، هر حرف با حرف بعدی الفبا جایگزین می‌شود. رمز «کتاب» چیست؟',['لثاپ','لتاب','کثاب','گتاب'],0],
+['دو عدد صحیح مثبت حاصل‌ضرب ۳۶ و مجموع ۱۳ دارند. اختلاف آن‌ها چیست؟',['۳','۴','۵','۷'],2],
+['اگر ۴ دستگاه در ۶ ساعت ۲۴ قطعه بسازند، ۶ دستگاه در ۴ ساعت چند قطعه می‌سازند؟',['۱۸','۲۴','۳۶','۴۸'],1],
+['در یک الگو هر جمله دو برابر جمله قبل منهای ۱ است: ۲، ۳، ۵، ۹، ۱۷، جمله بعدی؟',['۲۵','۳۱','۳۳','۳۵'],2],
+['یک مستطیل مساحت ۹۶ و طول ۱۲ دارد. محیط آن چند است؟',['۳۲','۳۶','۴۰','۴۸'],2]
+]
+};
 const names={easy:'آسان',medium:'متوسط',hard:'سخت'};let user=localStorage.getItem('iq_user')||'',answers=[],qs=[],idx=0,lev='',left=600,timer;
 function show(id){document.querySelectorAll('main>section').forEach(x=>x.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');if(id==='profile')profile();if(id==='rank')rank()}
 function login(){let n=document.getElementById('username').value.trim();if(n.length<2)return alert('نام باید حداقل ۲ حرف باشد.');user=n;localStorage.setItem('iq_user',user);show('home')}
 function start(l){if(!user){show('auth');return}lev=l;qs=levels[l];answers=Array(20).fill(null);idx=0;left=600;show('quiz');document.getElementById('level').textContent='آزمون '+names[l];render();clearInterval(timer);timer=setInterval(()=>{left--;document.getElementById('timer').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');if(left<=0)finish()},1000)}
 function render(){let q=qs[idx];document.getElementById('counter').textContent='سؤال '+(idx+1)+' از ۲۰';document.getElementById('question').textContent=q[0];document.getElementById('bar').style.width=((idx+1)*5)+'%';document.getElementById('options').innerHTML=q[1].map((v,i)=>'<button class="option '+(answers[idx]===i?'selected':'')+'" onclick="pick('+i+')">'+['الف','ب','پ','ت'][i]+') '+v+'</button>').join('');document.getElementById('prev').disabled=idx===0;document.getElementById('next').textContent=idx===19?'پایان آزمون':'بعدی'}
 function pick(i){answers[idx]=i;render()}function move(d){if(d===1&&idx===19)return finish();idx=Math.max(0,Math.min(19,idx+d));render()}
-function finish(){clearInterval(timer);let n=answers.reduce((s,a,i)=>s+(a===qs[i][2]?1:0),0);let all=JSON.parse(localStorage.getItem('iq_scores')||'[]');all.push({name:user,level:names[lev],score:n});localStorage.setItem('iq_scores',JSON.stringify(all));document.getElementById('score').textContent=n+' از ۲۰';document.getElementById('resultText').textContent='سطح '+names[lev]+' • '+(n*5)+'٪ پاسخ درست';show('result')}
+function finish(){clearInterval(timer);let n=answers.reduce((s,a,i)=>s+(a===qs[i][2]?1:0),0);let all=JSON.parse(localStorage.getItem('iq_scores')||'[]');all.push({name:user,level:names[lev],levelKey:lev,score:n});localStorage.setItem('iq_scores',JSON.stringify(all));document.getElementById('score').textContent=n+' از ۲۰';document.getElementById('resultText').textContent='سطح '+names[lev]+' • '+(n*5)+'٪ پاسخ درست';show('result')}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function profile(){let a=JSON.parse(localStorage.getItem('iq_scores')||'[]').filter(x=>x.name===user);document.getElementById('profileInfo').innerHTML='<p>نام: <b>'+esc(user||'مهمان')+'</b></p><p>تعداد آزمون‌ها: '+a.length+'</p><p>بهترین امتیاز: '+(a.length?Math.max(...a.map(x=>x.score))+'/۲۰':'هنوز آزمونی نداده‌ای')+'</p>'}
-function rank(){let a=JSON.parse(localStorage.getItem('iq_scores')||'[]').sort((x,y)=>y.score-x.score).slice(0,20);document.getElementById('ranks').innerHTML=a.length?'<table class="table"><tr><th>رتبه</th><th>نام</th><th>سطح</th><th>امتیاز</th></tr>'+a.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+x.level+'</td><td>'+x.score+'/۲۰</td></tr>').join('')+'</table>':'<p>هنوز نتیجه‌ای ثبت نشده است.</p>'}
+function rank(){
+ let all=JSON.parse(localStorage.getItem('iq_scores')||'[]');
+ const groups=[['easy','آسان'],['medium','متوسط'],['hard','سخت']];
+ document.getElementById('ranks').innerHTML=groups.map(([key,label])=>{
+   const a=all.filter(x=>(x.levelKey||({'آسان':'easy','متوسط':'medium','سخت':'hard'}[x.level]))===key).sort((x,y)=>y.score-x.score).slice(0,10);
+   return '<h3 style="color:var(--gold);margin-top:24px">🏆 رتبه‌بندی آزمون '+label+'</h3>'+(a.length?'<table class="table"><tr><th>رتبه</th><th>نام</th><th>امتیاز</th></tr>'+a.map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+x.score+'/۲۰</td></tr>').join('')+'</table>':'<p>هنوز نتیجه‌ای برای سطح '+label+' ثبت نشده است.</p>');
+ }).join('');
+}
 show('home');
 </script><script>
 const V=(inner)=>'<svg viewBox="0 0 420 120" role="img" aria-label="شکل معمای تصویری" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';
