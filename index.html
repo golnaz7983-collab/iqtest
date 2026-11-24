@@ -206,8 +206,26 @@ function finishKid7(){if(kid7Finished)return;kid7Finished=true;clearInterval(kid
 <script>
 const GRADE_SUBJECTS=["ریاضی","فارسی","علوم","مطالعات اجتماعی"];
 const GRADE_FILES={1:{},2:{},3:{},4:{},5:{},6:{}};
+const FIRST_GRADE_RESOURCES=[
+ {name:"ریاضی",book:"https://chap.sch.ir/",exam:"https://nikipoo.ir/azmoon/riazi-1/",worksheets:"https://nikipoo.ir/karbarg/paye-1/"},
+ {name:"فارسی و نگارش",book:"https://chap.sch.ir/",exam:"https://nikipoo.ir/azmoon/farsi-1/",worksheets:"https://nikipoo.ir/karbarg/paye-1/"},
+ {name:"علوم تجربی",book:"https://chap.sch.ir/",exam:"https://nikipoo.ir/azmoon/olum-1/",worksheets:"https://nikipoo.ir/karbarg/paye-1/"},
+ {name:"قرآن",book:"https://chap.sch.ir/",catalog:"https://iranianschools.org/resources"},
+ {name:"هنر و خلاقیت",book:"https://chap.sch.ir/",catalog:"https://iranianschools.org/resources"},
+ {name:"جهان پیرامون",book:"https://chap.sch.ir/",catalog:"https://iranianschools.org/resources"},
+ {name:"حرکت و بازی",book:"https://chap.sch.ir/",catalog:"https://iranianschools.org/resources"}
+];
+function resourceLink(url,label,primary){return '<a href="'+url+'" target="_blank" rel="noopener noreferrer" '+(primary?'class="primary"':'')+' style="display:inline-block;padding:10px;margin:4px;border:1px solid #514326;border-radius:10px;color:'+(primary?'#171108':'var(--light)')+';text-decoration:none">'+label+'</a>';}
 function renderGrades(){document.getElementById("gradeList").innerHTML=Array.from({length:6},(_,i)=>'<div class="card"><h3>پایه '+["اول","دوم","سوم","چهارم","پنجم","ششم"][i]+'</h3><p>کتاب‌ها، تمرین‌ها و پاسخ‌نامه‌ها</p><button class="primary" onclick="openGrade('+(i+1)+')">مشاهده منابع</button></div>').join("");}
-function openGrade(n){document.getElementById("gradeTitle").textContent="منابع درسی پایه "+["","اول","دوم","سوم","چهارم","پنجم","ششم"][n];document.getElementById("gradeSubjects").innerHTML=GRADE_SUBJECTS.map(s=>{const f=(GRADE_FILES[n]||{})[s]||{};const book=f.book?'<a href="'+f.book+'" download class="primary" style="display:inline-block;padding:10px;border-radius:10px;color:#171108;text-decoration:none">دانلود کتاب درسی</a>':'<span class="notice">فایل کتاب هنوز اضافه نشده</span>';const answer=f.answer?'<a href="'+f.answer+'" download style="display:inline-block;padding:10px;border:1px solid #514326;border-radius:10px;color:var(--light);text-decoration:none">دانلود پاسخ‌نامه</a>':'<span class="notice">پاسخ‌نامه هنوز اضافه نشده</span>';return '<div class="card"><h3>'+s+'</h3><p>کتاب درسی</p>'+book+'<p>جواب تمرین‌ها و نمونه‌سؤال‌ها</p>'+answer+'</div>';}).join("");show("gradeDetail");}
+function openGrade(n){
+ document.getElementById("gradeTitle").textContent="منابع درسی پایه "+["","اول","دوم","سوم","چهارم","پنجم","ششم"][n];
+ if(n===1){
+  document.getElementById("gradeSubjects").innerHTML=FIRST_GRADE_RESOURCES.map(s=>'<div class="card"><h3>'+s.name+'</h3><p>کتاب رسمی</p>'+resourceLink(s.book,"رفتن به پایگاه رسمی کتاب‌های درسی",true)+(s.catalog?resourceLink(s.catalog,"فهرست کتاب‌های پایه اول",false):"")+(s.exam?'<p>آزمون و نمونه‌سؤال</p>'+resourceLink(s.exam,"دیدن آزمون‌های درس",false):"")+(s.worksheets?'<p>کاربرگ‌های تمرینی</p>'+resourceLink(s.worksheets,"دیدن کاربرگ‌های پایه اول",false):"")+'</div>').join("");
+ }else{
+  document.getElementById("gradeSubjects").innerHTML=GRADE_SUBJECTS.map(s=>'<div class="card"><h3>'+s+'</h3><p>منابع این پایه هنوز اضافه نشده است.</p><span class="notice">به‌زودی منابع و لینک‌های مجاز اضافه می‌شوند.</span></div>').join("");
+ }
+ show("gradeDetail");
+}
 renderGrades();
 </script>
 </body></html>
